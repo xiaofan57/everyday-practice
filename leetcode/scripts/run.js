@@ -11,7 +11,7 @@ const RecordFilePath = path.join(__dirname, "..", "record.json")
 const record = async (options = {}) => {
   let content
   try {
-    content = fs.readFile(RecordFilePath, "utf-8")
+    content = await fs.readFile(RecordFilePath, "utf-8")
     content = JSON.parse(content)
   } catch (_) {
     // file not exist
@@ -32,7 +32,7 @@ const record = async (options = {}) => {
     id: undefined, // remove "id" field,
     mtime: Date.now().toString(),
   }
-  content = JSON.stringify(content, null, 2)
+  content = JSON.stringify(content)
   await fs.writeFile(RecordFilePath, content)
 }
 
