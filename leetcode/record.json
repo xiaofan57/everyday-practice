@@ -1,1 +1,18 @@
-{"19":{"ctime":"1648871544570","title":"删除链表的倒数第N个结点","link":"remove-nth-node-from-end-of-list","difficulty":"medium","tags":["链表"],"mtime":"1648871596388"},"206":{"ctime":"1648788292010","title":"反转链表","link":"reverse-linked-lis","difficulty":"easy","tags":["链表"],"mtime":"1648788292010"}}
+{
+  "19": {
+    "ctime": "1648871596",
+    "title": "删除链表的倒数第N个结点",
+    "link": "remove-nth-node-from-end-of-list",
+    "difficulty": "medium",
+    "tags": ["链表"],
+    "mtime": "1648871596"
+  },
+  "206": {
+    "ctime": "1648788292",
+    "title": "反转链表",
+    "link": "reverse-linked-lis",
+    "difficulty": "easy",
+    "tags": ["链表"],
+    "mtime": "1648788292"
+  }
+}

@@ -19,8 +19,9 @@ const record = async (options = {}) => {
   }
 
   const { id } = options
+  const curr = Math.floor(Date.now() / 1000).toString()
   let prevRecord = content[id] || {
-    ctime: Date.now().toString(),
+    ctime: curr,
   }
 
   const remoteRecord = await getQuestionInfo(id)
@@ -30,7 +31,7 @@ const record = async (options = {}) => {
     ...remoteRecord,
     ...options,
     id: undefined, // remove "id" field,
-    mtime: Date.now().toString(),
+    mtime: curr,
   }
   content = JSON.stringify(content)
   await fs.writeFile(RecordFilePath, content)

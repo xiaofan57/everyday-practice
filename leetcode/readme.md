@@ -1,5 +1,3 @@
 ## link
 
-- [leetcode-cn]()
-- []
-- 
+- [leetcode-cn](https://leetcode-cn.com/problems/)
