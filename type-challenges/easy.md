@@ -30,7 +30,7 @@
 
 ---
 
-## TupleToObject
+## Tuple to Object
 
 - see [@github](https://github.com/type-challenges/type-challenges/blob/master/questions/11-easy-tuple-to-object/README.md)
 - e.g. & solution
@@ -66,6 +66,8 @@
   type First_2<T extends any[]> = T extends [infer F, ...unknown[]] ? F : never
   ```
 
+---
+
 ## Length of Tuple
 
 - see [@github](https://github.com/type-challenges/type-challenges/blob/master/questions/18-easy-tuple-length/README.md)
@@ -91,3 +93,82 @@
 
   type Length_2<T extends readonly any[]> = T["length"]
   ```
+
+---
+
+## Exclude
+
+- see [@github](https://github.com/type-challenges/type-challenges/blob/master/questions/43-easy-exclude/README.md)
+
+- solution
+
+  ```typescript
+  type MyExclude<T, U> = T extends U ? never : T
+  ```
+
+---
+
+## Awaited
+
+- see [@github](https://github.com/type-challenges/type-challenges/blob/master/questions/189-easy-awaited/README.md)
+
+- solution
+
+  ```typescript
+  type MyAwaited<T> = T extends Promise<infer R> ? MyAwaited<R> : T
+  ```
+
+---
+
+## If
+
+- see [@github](https://github.com/type-challenges/type-challenges/blob/master/questions/268-easy-if/README.md)
+
+- e.g. & solution
+
+  ```typescript
+  type A = If<true, "a", "b"> // expected to be 'a'
+  type B = If<false, "a", "b"> // expected to be 'b'****
+
+  // --- resolve ---
+
+  type If<C, T, F> = C extends true ? T : F
+  ```
+
+---
+
+## Concat
+
+- see [@github](https://github.com/type-challenges/type-challenges/blob/master/questions/533-easy-concat/README.md)
+
+- e.g. & solution
+
+  ```typescript
+  type Result = Concat<[1], [2]> // expected to be [1, 2]
+
+  // --- resolve ---
+
+  type Concat<T extends any[], U extends any[]> = [...T, ...U]
+  ```
+
+---
+
+## Includes
+
+- see [@github](https://github.com/type-challenges/type-challenges/blob/master/questions/898-easy-includes/README.md)
+
+- e.g. & solution
+
+  ```typescript
+  type isPillarMen = Includes<["Kars", "Esidisi", "Wamuu", "Santana"], "Dio"> // expected to be `false`
+
+  // --- resolve ---
+
+  type Includes<T extends readonly any[], U> = T extends [infer F, ...infer R]
+    ? MyEqual<F, U> extends true
+      ? true
+      : Includes<R, U>
+    : false
+  ```
+
+---
