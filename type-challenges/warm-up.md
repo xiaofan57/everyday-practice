@@ -10,10 +10,10 @@
     completed: boolean
   }
 
-  type TodoPreview = MyPick<Todo, "title" | "completed">
+  type TodoPreview = MyPick<Todo, 'title' | 'completed'>
 
   const todo: TodoPreview = {
-    title: "Clean room",
+    title: 'Clean room',
     completed: false,
   }
 
@@ -36,7 +36,7 @@
 - e.g. & solution
 
   ```typescript
-  const tuple = ["tesla", "model 3", "model X", "model Y"] as const
+  const tuple = ['tesla', 'model 3', 'model X', 'model Y'] as const
 
   type result = TupleToObject<typeof tuple> // expected { tesla: 'tesla', 'model 3': 'model 3', 'model X': 'model X', 'model Y': 'model Y'}
 
@@ -53,7 +53,7 @@
 - e.g. & solution
 
   ```typescript
-  type arr1 = ["a", "b", "c"]
+  type arr1 = ['a', 'b', 'c']
   type arr2 = [3, 2, 1]
 
   type head1 = First<arr1> // expected to be 'a'
@@ -75,23 +75,17 @@
 - e.g. & solution
 
   ```typescript
-  type tesla = ["tesla", "model 3", "model X", "model Y"]
-  type spaceX = [
-    "FALCON 9",
-    "FALCON HEAVY",
-    "DRAGON",
-    "STARSHIP",
-    "HUMAN SPACEFLIGHT"
-  ]
+  type tesla = ['tesla', 'model 3', 'model X', 'model Y']
+  type spaceX = ['FALCON 9', 'FALCON HEAVY', 'DRAGON', 'STARSHIP', 'HUMAN SPACEFLIGHT']
 
   type teslaLength = Length<tesla> // expected 4
   type spaceXLength = Length<spaceX> // expected 5
 
   // --- resolve ---
 
-  type Length_1<T extends any> = T extends readonly any[] ? T["length"] : never
+  type Length_1<T extends any> = T extends readonly any[] ? T['length'] : never
 
-  type Length_2<T extends readonly any[]> = T["length"]
+  type Length_2<T extends readonly any[]> = T['length']
   ```
 
 ---
@@ -127,8 +121,8 @@
 - e.g. & solution
 
   ```typescript
-  type A = If<true, "a", "b"> // expected to be 'a'
-  type B = If<false, "a", "b"> // expected to be 'b'****
+  type A = If<true, 'a', 'b'> // expected to be 'a'
+  type B = If<false, 'a', 'b'> // expected to be 'b'****
 
   // --- resolve ---
 
@@ -160,9 +154,13 @@
 - e.g. & solution
 
   ```typescript
-  type isPillarMen = Includes<["Kars", "Esidisi", "Wamuu", "Santana"], "Dio"> // expected to be `false`
+  type isPillarMen = Includes<['Kars', 'Esidisi', 'Wamuu', 'Santana'], 'Dio'> // expected to be `false`
 
   // --- resolve ---
+
+  type MyEqual<X, Y> = (<T>() => T extends X ? 1 : 2) extends <T>() => T extends Y ? 1 : 2
+    ? true
+    : false
 
   type Includes<T extends readonly any[], U> = T extends [infer F, ...infer R]
     ? MyEqual<F, U> extends true
@@ -172,3 +170,39 @@
   ```
 
 ---
+
+## Push
+
+- see [@github](https://github.com/type-challenges/type-challenges/blob/master/questions/3057-easy-push/README.md)
+
+- e.g. & solution
+
+  ```typescript
+  type Push<T extends unknown[], U> = [...T, U]
+  ```
+
+---
+
+## Unshift
+
+- see [@github](https://github.com/type-challenges/type-challenges/blob/master/questions/3060-easy-unshift/README.md)
+
+- e.g. & solution
+
+  ```typescript
+  type Unshift<T extends any[], U> = [U, ...T]
+  ```
+
+---
+
+## Parameters
+
+- see [@github](https://github.com/type-challenges/type-challenges/blob/master/questions/3312-easy-parameters/README.md)
+
+- e.g. & solution
+
+  ```typescript
+  type MyParameters<T extends (...args: any[]) => any> = T extends (...args: infer R) => any
+    ? R
+    : never
+  ```
