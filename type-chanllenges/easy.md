@@ -7,6 +7,9 @@
 - [Exclude](#exclude)
 - [Concat](#concat)
 - [Includes](#includes)
+- [Push](#push)
+- [Unshift](#unshift)
+- [Parameters](#parameters)
 
 <!-- /TOC -->
 
@@ -174,4 +177,53 @@ type Includes<T extends readonly any[], U> = T extends [infer F, ...infer R]
     ? true
     : Includes<R, U>
   : false
+```
+
+## Push
+
+> `easy` `#array`
+
+```typescript
+/**
+ * Implement the generic version of `Array.push`
+ * For example
+ */
+type Result = Push<[1, 2], '3'> // [1, 2, '3']
+
+/**
+ * resolve
+ */
+type Push<T extends any[], U> = [...T, U]
+```
+
+## Unshift
+
+> `easy` `#array`
+
+```typescript
+/**
+ * Implement the type version of `Array.unshift`
+ * For example
+ */
+
+type Result = Unshift<[1, 2], 0> // [0, 1, 2]
+
+/**
+ * resolve
+ */
+type Unshift<T extends any[], U> = [U, ...T]
+```
+
+## Parameters
+
+> `easy` `#infer` `tuple` `#built-in`
+
+```typescript
+/**
+ * Implement the built-in Parameters generic without using it.
+ */
+
+type MyParameters<T extends (...args: any[]) => any> = T extends (...args: infer P) => any
+  ? P
+  : never
 ```
