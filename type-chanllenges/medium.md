@@ -18,6 +18,9 @@
     - [FlattenDepth](#flattendepth)
     - [IndexOf](#indexof)
     - [LastIndexOf](#lastindexof)
+    - [AnyOf](#anyof)
+    - [Unique](#unique)
+    - [Join](#join)
 
 <!-- /TOC -->
 
@@ -68,7 +71,6 @@ type MyOmit$2<T, K> = {
  * Implement the built-in ReturnType<T> generic without using it.
  * For example
  */
-
 const fn = (v: boolean) => {
   if (v) return 1
   else return 2
@@ -164,7 +166,6 @@ type TupleToUnion$3<T> = T extends Array<infer R> ? R : never
 /**
  * Given a tuple type `T` that only contains string type, and a type `U`, build an object recursively.
  */
-
 type a = TupleToNestedObject<['a'], string> // {a: string}
 type b = TupleToNestedObject<['a', 'b'], number> // {a: {b: number}}
 type c = TupleToNestedObject<[], boolean> // boolean. if the tuple is empty, just return the U type
@@ -211,7 +212,6 @@ type Last<T extends readonly unknown[]> = T extends [...infer U, infer L] ? L : 
  * Implement a generic `Pop<T>` that takes an Array `T` and returns an Array without it's last element.
  * For example
  */
-
 type arr1 = ['a', 'b', 'c', 'd']
 type arr2 = [3, 2, 1]
 
@@ -275,7 +275,6 @@ type b = FlattenDepth<[1, 2, [3, 4], [[[5]]]]> // [1, 2, 3, 4, [[5]]]. Depth def
  * Implement the type version of `Array.indexOf`,
  * `indexOf<T, U>` takes an Array `T`, any `U` and returns the index of the first `U` in Array `T`.
  */
-
 type Res = IndexOf<[1, 2, 3], 2> // expected to be 1
 type Res1 = IndexOf<[2, 6, 3, 8, 4, 1, 7, 3, 9], 3> // expected to be 2
 type Res2 = IndexOf<[0, 0, 0], 2> // expected to be -1
@@ -324,4 +323,93 @@ type LastIndexOf<T extends readonly unknown[], U> = T extends [...infer F, infer
     ? F['length']
     : LastIndexOf<F, U>
   : -1
+```
+
+### AnyOf
+
+> `medium` `#array`
+
+```typescript
+/**
+ * Implement Python liked `any` function in the type system.
+ * A type takes the Array and returns `true` if any element of the Array is true.
+ * If the Array is empty, return `false`.
+ * For example
+ */
+type Sample1 = AnyOf<[1, '', false, [], {}]> // expected to be true.
+type Sample2 = AnyOf<[0, '', false, [], {}]> // expected to be false.
+
+/**
+ * resolve
+ */
+
+// Python中的 `[]`、`{}` 是假值，这点与JavaScript不同
+type FalsyUnit = 0 | false | '' | [] | Record<keyof any, never>
+
+type AnyOf<T extends readonly any[]> = T extends [infer F, ...infer R]
+  ? F extends FalsyUnit
+    ? AnyOf<R>
+    : true
+  : false
+```
+
+### Unique
+
+> `medium` `#array`
+
+```typescript
+/**
+ * Implement the type version of `Lodash.uniq`,
+ * Unique takes an Array `T`, returns the Array `T` without repeated values.
+ */
+type Res = Unique<[1, 1, 2, 2, 3, 3]> // expected to be [1, 2, 3]
+type Res1 = Unique<[1, 2, 3, 4, 4, 5, 6, 7]> // expected to be [1, 2, 3, 4, 5, 6, 7]
+type Res2 = Unique<[1, 'a', 2, 'b', 2, 'a']> // expected to be [1, "a", 2, "b"]
+type Res3 = Unique<[string, number, 1, 'a', 1, string, 2, 'b', 2, number]> // expected to be [string, number, 1, "a", 2, "b"]
+type Res4 = Unique<[unknown, unknown, any, any, never, never]> // expected to be [unknown, any, never]
+
+/**
+ * resolve
+ */
+
+type MyEqual<X, Y> = (<T>() => T extends X ? 1 : 2) extends <T>() => T extends Y ? 1 : 2
+  ? true
+  : false
+
+type MyIncludes<T extends readonly any[], U> = T extends [infer F, ...infer R]
+  ? MyEqual<F, U> extends true
+    ? true
+    : MyIncludes<R, U>
+  : false
+
+type Unique<T extends readonly unknown[], U extends unknown[] = []> = T extends [
+  infer F,
+  ...infer R
+]
+  ? MyIncludes<U, F> extends true
+    ? Unique<R, U>
+    : Unique<R, [...U, F]>
+  : U
+```
+
+### Join
+
+> `medium` `#array`
+
+```typescript
+/**
+ * Implement the type version of `Array.join`,
+ * `Join<T, U>` takes an Array `T`, string or number `U` and returns the Array `T` with `U` stitching up.
+ */
+type Res = Join<['a', 'p', 'p', 'l', 'e'], '-'> // expected to be 'a-p-p-l-e'
+type Res1 = Join<['Hello', 'World'], ' '> // expected to be 'Hello World'
+type Res2 = Join<['2', '2', '2'], 1> // expected to be '21212'
+type Res3 = Join<['o'], 'u'> // expected to be 'o'
+
+/**
+ * resolve
+ */
+type Join<T extends readonly unknown[], U extends string | number> = T extends [infer F, ...infer R]
+  ? `${F & string}${R['length'] extends 0 ? '' : U}${Join<R, U>}`
+  : ''
 ```
