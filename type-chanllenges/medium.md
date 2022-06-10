@@ -21,6 +21,8 @@
     - [AnyOf](#anyof)
     - [Unique](#unique)
     - [Join](#join)
+    - [Greater Than](#greater-than)
+    - [without](#without)
 
 <!-- /TOC -->
 
@@ -51,7 +53,6 @@ const todo: TodoPreview = {
 /**
  * resolve
  */
-
 type MyOmit$1<T, K> = {
   [P in keyof T as P extends K ? never : P]: T[P]
 }
@@ -81,7 +82,6 @@ type a = MyReturnType<typeof fn> // should be "1 | 2"
 /**
  * resolve
  */
-
 type MyReturnType<T extends (...args: any) => any> = T extends (...args: any) => infer R ? R : any
 ```
 
@@ -116,7 +116,6 @@ todo.completed = true // OK
 /**
  * resolve
  */
-
 type MyReadonly2$1<T, K extends keyof T> = {
   readonly [P in K]: T[P]
 } & {
@@ -282,7 +281,6 @@ type Res2 = IndexOf<[0, 0, 0], 2> // expected to be -1
 /**
  * resolve
  */
-
 type MyEqual<T, U> = (<T>() => T extends U ? 1 : 2) extends <U>() => U extends T ? 1 : 2
   ? true
   : false
@@ -313,7 +311,6 @@ type Res2 = LastIndexOf<[0, 0, 0], 2> // -1
 /**
  * resolve
  */
-
 type MyEqual<T, U> = (<T>() => T extends U ? 1 : 2) extends <U>() => U extends T ? 1 : 2
   ? true
   : false
@@ -342,7 +339,6 @@ type Sample2 = AnyOf<[0, '', false, [], {}]> // expected to be false.
 /**
  * resolve
  */
-
 // Python中的 `[]`、`{}` 是假值，这点与JavaScript不同
 type FalsyUnit = 0 | false | '' | [] | Record<keyof any, never>
 
@@ -412,4 +408,69 @@ type Res3 = Join<['o'], 'u'> // expected to be 'o'
 type Join<T extends readonly unknown[], U extends string | number> = T extends [infer F, ...infer R]
   ? `${F & string}${R['length'] extends 0 ? '' : U}${Join<R, U>}`
   : ''
+```
+
+### Greater Than
+
+> `medium` `#array`
+
+```typescript
+/**
+ * In This Challenge, You should implement a type `GreaterThan<T, U>` like `T` > `U`
+ * Negative numbers do not need to be considered.
+ * For example
+ */
+GreaterThan<2, 1> //should be true
+GreaterThan<1, 1> //should be false
+GreaterThan<10, 100> //should be false
+GreaterThan<111, 11> //should be true
+
+/**
+ * resolve
+ */
+type ZERO = 0
+type GreaterThan<T extends number, U extends number, K extends ZERO[] = []> = K['length'] extends T
+  ? false
+  : K['length'] extends U
+    ? true
+    : GreaterThan<T, U, [...K, ZERO]>
+```
+
+### without
+
+> `medium` `#union` `#array`
+
+```typescript
+/**
+ * Implement the type version of Lodash.without,
+ * Without<T, U> takes an Array T,
+ * number or array U and returns an Array without the elements of U.
+ * For example
+ */
+type Res = Without<[1, 2], 1> // expected to be [2]
+type Res1 = Without<[1, 2, 4, 1, 5], [1, 2]> // expected to be [4, 5]
+type Res2 = Without<[2, 3, 2, 3, 2, 3, 2, 3], [2, 3]> // expected to be []
+
+/**
+ * resolve
+ */
+// helper type
+type MyEqual<X, Y> = (<T>() => T extends X ? 1 : 2) extends <T>() => T extends Y ? 1 : 2
+  ? true
+  : false
+type MyIncludes<T extends readonly any[], U> = T extends [infer F, ...infer R]
+  ? MyEqual<F, U> extends true
+    ? true
+    : MyIncludes<R, U>
+  : false
+type ToArray<T> = T extends readonly unknown[] ? T : [T]
+
+type Without<T extends readonly unknown[], U, RES extends unknown[] = []> = T extends [
+  infer F,
+  ...infer R
+]
+  ? MyIncludes<ToArray<U>, F> extends true
+    ? Without<R, U, RES>
+    : Without<R, U, [...RES, F]>
+  : RES
 ```
