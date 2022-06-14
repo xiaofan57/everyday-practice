@@ -23,6 +23,8 @@
     - [Join](#join)
     - [Greater Than](#greater-than)
     - [without](#without)
+  - [argument](#argument)
+    - [Append argument](#append-argument)
 
 <!-- /TOC -->
 
@@ -454,7 +456,7 @@ type Res2 = Without<[2, 3, 2, 3, 2, 3, 2, 3], [2, 3]> // expected to be []
 /**
  * resolve
  */
-// helper type
+// helper
 type MyEqual<X, Y> = (<T>() => T extends X ? 1 : 2) extends <T>() => T extends Y ? 1 : 2
   ? true
   : false
@@ -473,4 +475,32 @@ type Without<T extends readonly unknown[], U, RES extends unknown[] = []> = T ex
     ? Without<R, U, RES>
     : Without<R, U, [...RES, F]>
   : RES
+```
+
+## argument
+
+### Append argument
+
+> `medium` `#arguments`
+
+```typescript
+/**
+ * For given function type Fn, and any type A create a generic type
+ which will take Fn as the first argument, A as the second,
+ * and will produce function type G which will be the same as Fn
+ but with appended argument A as a last one.
+ * for example
+ */
+type Fn = (a: number, b: string) => number
+
+type Result = AppendArgument<Fn, boolean>
+// expected be (a: number, b: string, x: boolean) => number
+
+/**
+ * resolve
+ */
+type MyPush<T extends readonly unknown[], U> = [...T, U]
+type AppendArgument<Fn, A> = Fn extends (...args: any) => any
+  ? (...args: MyPush<Parameters<Fn>, A>) => ReturnType<Fn>
+  : never
 ```
