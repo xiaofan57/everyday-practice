@@ -13,7 +13,6 @@
   - [Array](#array)
     - [Last of Array](#last-of-array)
     - [Pop](#pop)
-    - [Shift](#shift)
     - [Flatten](#flatten)
     - [FlattenDepth](#flattendepth)
     - [IndexOf](#indexof)
@@ -25,6 +24,7 @@
     - [without](#without)
   - [argument](#argument)
     - [Append argument](#append-argument)
+    - [Filp arguments](#filp-arguments)
 
 <!-- /TOC -->
 
@@ -224,10 +224,6 @@ type re2 = Pop<arr2> // expected to be [3, 2]
  */
 type Pop<T extends readonly unknown[]> = T extends [...infer U, infer L] ? U : never
 ```
-
-### Shift
-
-> pass
 
 ### Flatten
 
@@ -485,10 +481,10 @@ type Without<T extends readonly unknown[], U, RES extends unknown[] = []> = T ex
 
 ```typescript
 /**
- * For given function type Fn, and any type A create a generic type
- which will take Fn as the first argument, A as the second,
- * and will produce function type G which will be the same as Fn
- but with appended argument A as a last one.
+ * For given function type `Fn`, and any type `A` create a generic type
+ which will take `Fn` as the first argument, `A` as the second,
+ * and will produce function type `G` which will be the same as `Fn`
+ but with appended argument `A` as a last one.
  * for example
  */
 type Fn = (a: number, b: string) => number
@@ -503,4 +499,29 @@ type MyPush<T extends readonly unknown[], U> = [...T, U]
 type AppendArgument<Fn, A> = Fn extends (...args: any) => any
   ? (...args: MyPush<Parameters<Fn>, A>) => ReturnType<Fn>
   : never
+```
+
+### Filp arguments
+
+> `medium` `#arguments`
+
+```typescript
+/**
+ * Implement the type version of `lodash’s _.flip`.
+ * Type `FlipArguments<T>` requires function type `T` and returns a new function type
+ * which has the same return type of `T` but reversed parameters.
+ * For example
+ */
+type Flipped = FlipArguments<(arg0: string, arg1: number, arg2: boolean) => void>
+// (arg0: boolean, arg1: number, arg2: string) => void
+
+/**
+ * resolve
+ */
+type FlipArguments<
+  T extends (...args: any) => any,
+  RES extends unknown[] = []
+> = Parameters<T> extends [infer F, ...infer R]
+  ? FlipArguments<(...args: R) => ReturnType<T>, [F, ...RES]>
+  : (...args: RES) => ReturnType<T>
 ```
